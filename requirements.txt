@@ -1,0 +1,5 @@
+sqlalchemy
+psycopg2
+pandas
+numpy
+pulp
