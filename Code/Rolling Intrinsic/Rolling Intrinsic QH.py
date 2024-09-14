@@ -43,19 +43,21 @@ def get_average_prices(side, execution_time_start, execution_time_end, end_date,
         COUNT(*) >= {min_trades};
         """)
     result = cursor.fetchall()
+    result = [(row[0], float(row[1])) for row in result] # transform to float from decimal
 
     
-    df = pd.DataFrame(result, columns=['product', 'price'])
+    df = pd.DataFrame(result, columns=['deliverystart', 'price'])
 
-    # set index to product
-    df.set_index('product', inplace=True)
+    df['deliverystart'] = pd.to_datetime(df['deliverystart']).dt.tz_localize('UTC').dt.tz_convert('Europe/Berlin')
+    df.set_index('deliverystart', inplace=True)
 
+    date_range = pd.date_range(start_of_day, end_of_day, freq='15min', tz='Europe/Berlin')
 
-    # set index to be all 15 minute intervals from start_of_day to end_of_day, filling missing values with NaN
-    df = df.reindex(pd.date_range(start_of_day, end_of_day, freq='15min'))
+    df = df.reindex(date_range)
+
+    print(df)
 
     return df
-
 def get_closest_prices(execution_time_start, end_date):
 
     # set start_of_day to end_date minus 1 day
@@ -352,8 +354,8 @@ def get_net_trades(trades, end_date):
 def simulate_period(start_day, end_day, threshold, threshold_abs_min, discount_rate, bucket_size, c_rate, roundtrip_eff, max_cycles):
 
     
-    # set path as ./ma_results/threshold
-    path = "./ma_final_results_qh_sens/bs" + str(bucket_size) + 'cr' + str(c_rate) + "rto" + str(roundtrip_eff) + "mc" + str(max_cycles) +  "/"
+    # set path as ./results/threshold
+    path = "./results/qh_bs" + str(bucket_size) + 'cr' + str(c_rate) + "rto" + str(roundtrip_eff) + "mc" + str(max_cycles) +  "/"
     tradepath = path + "/trades/"
 
     # create directory if it doesn't exist

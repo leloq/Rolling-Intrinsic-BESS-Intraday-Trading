@@ -16,7 +16,7 @@ conn_alchemy = create_engine(CONNECTION_ALCHEMY)
 cursor = conn.cursor()
 cursor.execute("ROLLBACK")
 
-def get_average_prices(side, execution_time_start, execution_time_end, end_date, min_trades=10):
+def get_average_prices(side, execution_time_start, execution_time_end, end_date, min_trades=1):
 
     # set start_of_day to end_date minus 1 day
     start_of_day = pd.to_datetime(end_date) - pd.Timedelta(hours=2)
@@ -43,16 +43,19 @@ def get_average_prices(side, execution_time_start, execution_time_end, end_date,
         COUNT(*) >= {min_trades};
         """)
     result = cursor.fetchall()
+    result = [(row[0], float(row[1])) for row in result] # transform to float from decimal
 
     
-    df = pd.DataFrame(result, columns=['product', 'price'])
+    df = pd.DataFrame(result, columns=['deliverystart', 'price'])
 
-    # set index to product
-    df.set_index('product', inplace=True)
+    df['deliverystart'] = pd.to_datetime(df['deliverystart']).dt.tz_localize('UTC').dt.tz_convert('Europe/Berlin')
+    df.set_index('deliverystart', inplace=True)
 
+    date_range = pd.date_range(start_of_day, end_of_day, freq='60min', tz='Europe/Berlin')
 
-    # set index to be all 15 minute intervals from start_of_day to end_of_day, filling missing values with NaN
-    df = df.reindex(pd.date_range(start_of_day, end_of_day, freq='60min'))
+    df = df.reindex(date_range)
+
+    print(df)
 
     return df
 
@@ -352,8 +355,8 @@ def get_net_trades(trades, end_date):
 def simulate_period(start_day, end_day, threshold, threshold_abs_min, discount_rate, bucket_size, c_rate, roundtrip_eff, max_cycles):
 
     
-    # set path as ./ma_results/threshold
-    path = "./ma_final_results_h_sens/bs" + str(bucket_size) + 'cr' + str(c_rate) + "rto" + str(roundtrip_eff) + "mc" + str(max_cycles) +  "/"
+    # set path as ./results/threshold
+    path = "./results/h_bs" + str(bucket_size) + 'cr' + str(c_rate) + "rto" + str(roundtrip_eff) + "mc" + str(max_cycles) +  "/"
     tradepath = path + "/trades/"
 
     # create directory if it doesn't exist
@@ -435,7 +438,8 @@ def simulate_period(start_day, end_day, threshold, threshold_abs_min, discount_r
                     results, trades, profit = run_optimization_quarterhours_repositioning(vwap, execution_time_start, 1, c_rate, roundtrip_eff, allowed_cycles, threshold, threshold_abs_min, discount_rate, net_trades)
                     #append trades to all_trades using concat
                     all_trades = pd.concat([all_trades, trades])
-                except:
+                except Exception as e:
+                    print(e)
                     print("Error in optimization")
                     print("execution_time_start: ", execution_time_start)
                     execution_time_start = execution_time_end
@@ -478,7 +482,7 @@ def simulate_period(start_day, end_day, threshold, threshold_abs_min, discount_r
 
 
 
-period_start = pd.Timestamp('2022-09-07 00:00:00', tz='Europe/Berlin')
-period_end = pd.Timestamp('2022-09-08 00:00:00', tz='Europe/Berlin')
+period_start = pd.Timestamp('2022-01-01 00:00:00', tz='Europe/Berlin')
+period_end = pd.Timestamp('2023-01-01 00:00:00', tz='Europe/Berlin')
 
 simulate_period(period_start, period_end, threshold=0, threshold_abs_min=0, discount_rate=0, bucket_size=15, c_rate=0.5, roundtrip_eff=0.86, max_cycles=365)
