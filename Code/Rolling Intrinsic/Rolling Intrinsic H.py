@@ -23,8 +23,8 @@ PASSWORD = '123'
 
 
 password_for_url = f":{PASSWORD}"
-CONNECTION = f"postgres://leloq{password_for_url}@127.0.0.1/repo"
-CONNECTION_ALCHEMY = f"postgresql://leloq{password_for_url}@127.0.0.1/repo"
+CONNECTION = f"postgres://leloq{password_for_url}@127.0.0.1/intradaydb"
+CONNECTION_ALCHEMY = f"postgresql://leloq{password_for_url}@127.0.0.1/intradaydb"
 conn = psycopg2.connect(CONNECTION)
 conn_alchemy = create_engine(CONNECTION_ALCHEMY)
 cursor = conn.cursor()
