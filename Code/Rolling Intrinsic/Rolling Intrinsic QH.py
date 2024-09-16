@@ -17,11 +17,9 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 PASSWORD = "123"
-if PASSWORD:
-    password_for_url = f":{PASSWORD}"
-else:
-    password_for_url = ""
 
+
+password_for_url = f":{PASSWORD}"
 CONNECTION = f"postgres://leloq{password_for_url}@127.0.0.1/intradaydb"
 CONNECTION_ALCHEMY = f"postgresql://leloq{password_for_url}@127.0.0.1/intradaydb"
 conn = psycopg2.connect(CONNECTION)
