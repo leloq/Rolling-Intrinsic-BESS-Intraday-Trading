@@ -64,11 +64,11 @@ Create a user named `leloq` with the password `123`:
 CREATE USER leloq WITH PASSWORD '123';
 ```
 
-#### Grant Privileges to the `leloq` User
-Grant all privileges on the `intradaydb` database to the `leloq` user:
+#### Change ownership to `leloq`
+ Change the ownership of `intradaydb` database to the `leloq` user:
 
 ```sql
-GRANT ALL PRIVILEGES ON DATABASE intradaydb TO leloq;
+ALTER DATABASE intradaydb OWNER TO leloq;
 ```
 
 #### Exit the PostgreSQL Shell
@@ -95,8 +95,8 @@ Install all required libraries listed in the `requirements.txt` file:
 pip install -r requirements.txt
 ```
 
-#### Install Gurobi:
-Gurobi is used as the solver in this project. Make sure you have a valid Gurobi license. If you haven't installed it yet, you can follow these steps:
+#### Optional -> Install Gurobi:
+Gurobi can be used as a solver in this project. Make sure you have a valid Gurobi license. If you haven't installed it yet, you can follow these steps:
 
 Install Gurobi Python bindings:
 
@@ -106,12 +106,46 @@ pip install gurobipy
 
 Set up your Gurobi license (follow the instructions on the Gurobi website).
 
+In the python files "Code/Rolling Intrinsic/Rolling Intrinsic H.py" & "Code/Rolling Intrinsic/Rolling Intrinsic QH.py"
+change to the GUROBI solver pulp provides and disable the default solver from pulp:
+```python
+from pulp import (
+    LpProblem,
+    LpVariable,
+    lpSum,
+    LpMaximize,
+    GUROBI,
+    # PULP_CBC_CMD,
+)
+...
+# m_battery.solve(PULP_CBC_CMD(msg=0))
+m_battery.solve(GUROBI(msg=0))
+```
+
 ### Step 3: Create randomized transaction data (or use actual EPEX Spot data)
 
 Now, you can run the code from the notebook 'Create Randomized Intraday Transaction Data'. Alternatively, you can fill the intradaydb table with actual data from any continous intraday market you want to cover.
 
 ### Step 4: Running the Code
 Now you're ready to run the optimization code in the "Code/Rolling Intrinsic" folder.
+Make sure you execute the file with current working directory being `rolling_intrinsic_intraday_trading/`.
+This is necessary for the output landing in the `output/` folder.
+
+### Step 5: Visualize the Results
+After having run the optimization code, you can visualize the behaviour of the Algorithm by running the jupyter notebooks
+`plotting_trading_behaviour_RIB_*.ipynb`.
+The only thing you have to do is to enter the date you want to visualize in the 2nd cell as constants.
+
+Imagine you want to plot December 24th 2022. In that case, you have to change the string in `START_OF_DAY`
+to be ```2022-12-24 00:00:00``` and `END_OF_DAY` to ```2022-12-25 00:00:00```
+```python
+START_OF_DAY = pd.Timestamp('2022-12-24 00:00:00', tz='Europe/Berlin')
+END_OF_DAY = pd.Timestamp('2022-12-25 00:00:00', tz='Europe/Berlin')
+EXECUTION_TIME_START = (START_OF_DAY - timedelta(days=1)).replace(hour=16, minute=0)
+EXECUTION_TIME_END = START_OF_DAY.replace(hour=22, minute=54, second=59)
+```
+After doing that, just run all cells.
+The plots are stored in the path `output/plots/rolling_intrinsic_*.png`
 
 
 ## ⚙️ Dependencies
@@ -125,6 +159,7 @@ Now you're ready to run the optimization code in the "Code/Rolling Intrinsic" fo
   - `gurobipy`
   - `sqlalchemy`
   - `pulp`
+  - `jupyter`'
 
 ## 📄 License
 This project is licensed under the MIT License - see the `LICENSE` file for details.
