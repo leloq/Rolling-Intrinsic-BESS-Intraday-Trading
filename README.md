@@ -106,7 +106,7 @@ pip install gurobipy
 
 Set up your Gurobi license (follow the instructions on the Gurobi website).
 
-In the python files "Code/Rolling Intrinsic/Rolling Intrinsic H.py" & "Code/Rolling Intrinsic/Rolling Intrinsic QH.py"
+In the python files `Code/Rolling Intrinsic/Rolling Intrinsic H.py` & `Code/Rolling Intrinsic/Rolling Intrinsic QH.py`
 change to the GUROBI solver pulp provides and disable the default solver from pulp:
 ```python
 from pulp import (
@@ -132,6 +132,7 @@ Make sure you execute the file with current working directory being `rolling_int
 This is necessary for the output landing in the `output/` folder.
 
 ### Step 5: Visualize the Results
+#### Rolling Intrinsic Behaviour
 After having run the optimization code, you can visualize the behaviour of the Algorithm by running the jupyter notebooks
 `plotting_trading_behaviour_RIB_*.ipynb`.
 The only thing you have to do is to enter the date you want to visualize in the 2nd cell as constants.
@@ -147,6 +148,15 @@ EXECUTION_TIME_END = START_OF_DAY.replace(hour=22, minute=54, second=59)
 After doing that, just run all cells.
 The plots are stored in the path `output/plots/rolling_intrinsic_*.png`
 
+#### Results Plot (Fig. 5) and Table (Tab. 2) in the Paper
+Just run the jupyter notebook `revenue_plots_and_results_table.ipynb`.
+In case you want to change the timeframe of the visualisation also adapt the two constants in cell 2.
+
+```python
+START_DATE = pd.Timestamp('2022-01-01 00:00:00', tz='Europe/Berlin')
+END_DATE = pd.Timestamp('2023-01-01 00:00:00', tz='Europe/Berlin')
+```
+
 
 ## ⚙️ Dependencies
 - **Python**: 3.8+
@@ -159,7 +169,9 @@ The plots are stored in the path `output/plots/rolling_intrinsic_*.png`
   - `gurobipy`
   - `sqlalchemy`
   - `pulp`
-  - `jupyter`'
+  - `jupyter`
+  - `matplotlib`
+  - `loguru`
 
 ## 📄 License
 This project is licensed under the MIT License - see the `LICENSE` file for details.
