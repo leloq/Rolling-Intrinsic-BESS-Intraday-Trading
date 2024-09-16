@@ -3,3 +3,6 @@ psycopg2
 pandas
 numpy
 pulp
+jupyter
+matplotlib
+loguru
