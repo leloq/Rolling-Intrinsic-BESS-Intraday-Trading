@@ -180,6 +180,6 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 Contributions are welcome! Please open an issue or submit a pull request.
 
 ## 👤 Contributors
-Leo Semmelmann, Jannik Dresselhaus, Kim Miskiw, Jan Niklas Ludwig
+Jannik Dresselhaus, Jan Ludwig, Leo Semmelmann, Kim Miskiw
 
 
