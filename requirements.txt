@@ -1,5 +1,6 @@
 sqlalchemy
-psycopg2
+psycopg2; sys_platform != 'darwin'
+psycopg2-binary; sys_platform == 'darwin'
 pandas
 numpy
 pulp
