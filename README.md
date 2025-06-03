@@ -4,6 +4,13 @@
 ## Project Overview
 The Rolling Intrinsic Intraday Energy Trading Optimization repository models continous intraday trading with the means of discretization and linear optimization. While the results of the underlying paper are based on actual EPEX Spot data (which requires paid access), the open-source repository at hand provides randomly generated data. 
 
+## 📚 Publication
+This repository is based on the following publication:
+
+**Semmelmann, L., Dresselhaus, J., Miskiw, K. K., Ludwig, J., & Weinhardt, C. (2025). An Algorithm for Modelling Rolling Intrinsic Battery Trading on the Continuous Intraday Market. *ACM SIGENERGY Energy Informatics Review*, *4*(4), 163-174.**
+
+🔗 **[View Publication](https://dl.acm.org/doi/abs/10.1145/3717413.3717428)**
+
 ## Project Structure
 
 The notebook 'Create Randomized Intraday Transaction Data' constitutes the first step: random transaction data (continous buy/sell orders) are created. Then, in the folder 'Code/Rolling Intrinsic' the Python scripts 'Rolling Intrinsic H.py' and 'Rolling Intrinsic QH.py' can be executed to model rolling intrinsic trading, respectively on the market for hourly or quarter hourly products. The Python script executes the function simulate_period() with the parameters described below. Finally, the results are then saved in the 'results' folder.
